@@ -13,9 +13,11 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: postgres
       POSTGRES_URL: 'jdbc:postgresql://db/petclinic'
+      SPRING_DATASOURCE_USERNAME: petclinic
+      SPRING_DATASOURCE_PASSWORD: petclinic
 
   db:
-    image: postgres:14.3-alpine
+    image: postgres:11-alpine
     ports:
       - "5432:5432"
     networks:
