@@ -21,13 +21,8 @@ public class OwnersApiTest extends BaseApiTest {
 		final String lastName = "Bond";
 		Long id = db.insert(entity, "last_name", lastName);
 
-		Response response = given()
-			.queryParam("lastName", lastName)
-			.queryParam("page", 1)
-			.when()
-			.get("/owners")
-			.then()
-			.extract().response();
+		Response response = given().queryParam("lastName", lastName).queryParam("page", 1).when().get("/owners").then()
+				.extract().response();
 
 		assertEquals(200, response.statusCode());
 		assertEquals(lastName, response.jsonPath().getString("lastName[0]"));
@@ -42,12 +37,8 @@ public class OwnersApiTest extends BaseApiTest {
 		final String lastName = "Claus";
 		Long id = db.insert(entity, "last_name", lastName);
 
-		Response response = given()
-			.pathParam("ownerId", id)
-			.when()
-			.get("/owners/{ownerId}")
-			.then()
-			.extract().response();
+		Response response = given().pathParam("ownerId", id).when().get("/owners/{ownerId}").then().extract()
+				.response();
 
 		assertEquals(200, response.statusCode());
 		assertEquals(lastName, response.jsonPath().getString("lastName"));
@@ -59,21 +50,14 @@ public class OwnersApiTest extends BaseApiTest {
 	@Test
 	@DisplayName("Create Owner with POST /owners")
 	public void shouldCreateOwnerInfoByLastName() throws SQLException, IOException {
-		Response response = given()
-			.header("content-type", "application/json")
-			.body(
-				generateStringFromResource(
-					"/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/owner/ownerBody.json"
-				)
-			)
-			.when()
-			.post("/owners")
-			.then()
-			.extract().response();
+		Response response = given().header("content-type", "application/json").body(generateStringFromResource(
+				"/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/owner/ownerBody.json")).when()
+				.post("/owners").then().extract().response();
 
 		assertEquals(201, response.statusCode());
 		assertNotNull(db.selectById(entity, response.jsonPath().getLong("id")));
 
 		db.delete(entity, response.jsonPath().getLong("id"));
 	}
+
 }

@@ -20,12 +20,10 @@ public class VetApiTest extends BaseApiTest {
 		String sqlRequest = String.format("SELECT count(*) from %s", entity);
 		int expectedCount = db.sqlRequest(sqlRequest).getInt("count");
 
-		Response response = when()
-			.get("/vets")
-			.then()
-			.assertThat().body("vetList.size()", is(expectedCount))
-			.extract().response();
+		Response response = when().get("/vets").then().assertThat().body("vetList.size()", is(expectedCount)).extract()
+				.response();
 
 		assertEquals(200, response.statusCode());
 	}
+
 }

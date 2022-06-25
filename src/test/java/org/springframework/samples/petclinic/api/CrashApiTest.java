@@ -10,9 +10,7 @@ public class CrashApiTest extends BaseApiTest {
 	@Test
 	@DisplayName("Get 500 error with GET /oups")
 	public void shouldGetError() {
-		when()
-			.get("/oups")
-			.then()
-			.statusCode(500);
+		when().get("/oups").then().statusCode(500);
 	}
+
 }

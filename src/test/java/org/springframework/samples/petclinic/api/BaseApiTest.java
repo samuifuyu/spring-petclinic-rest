@@ -23,11 +23,8 @@ abstract class BaseApiTest {
 
 	@BeforeAll
 	protected static void connect() throws SQLException {
-		connection = DriverManager.getConnection(
-			"jdbc:postgresql://localhost:5432/petclinic",
-			"petclinic",
-			"petclinic"
-		);
+		connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/petclinic", "petclinic",
+				"petclinic");
 
 		db = new DatabaseTestClient(connection);
 	}
@@ -40,4 +37,5 @@ abstract class BaseApiTest {
 	public String generateStringFromResource(String path) throws IOException {
 		return new String(Files.readAllBytes(Paths.get(path)));
 	}
+
 }

@@ -22,18 +22,16 @@ public class PetApiTest extends BaseApiTest {
 
 		Long ownerId = db.insert("owners", "last_name", lastName);
 
-		final String petSql = String.format("INSERT INTO pets(name, owner_id, birth_date) VALUES('%s', '%s', '2022-01-25')", petName, ownerId);
+		final String petSql = String.format(
+				"INSERT INTO pets(name, owner_id, birth_date) VALUES('%s', '%s', '2022-01-25')", petName, ownerId);
 		db.sqlRequestUpdate(petSql);
 
-		final String petIdSql = String.format("SELECT * from pets where name = '%s' and owner_id = '%s'", petName, ownerId);
+		final String petIdSql = String.format("SELECT * from pets where name = '%s' and owner_id = '%s'", petName,
+				ownerId);
 		Long expectedPetId = db.sqlRequest(petIdSql).getLong("id");
 
-		Response response = given()
-			.pathParam("ownerId", ownerId)
-			.when()
-			.get("/owners/{ownerId}/pets")
-			.then()
-			.extract().response();
+		Response response = given().pathParam("ownerId", ownerId).when().get("/owners/{ownerId}/pets").then().extract()
+				.response();
 
 		Long petId = response.jsonPath().getLong("id[0]");
 
@@ -52,20 +50,19 @@ public class PetApiTest extends BaseApiTest {
 
 		Long ownerId = db.insert("owners", "last_name", lastName);
 
-		final String petSql = String.format("INSERT INTO pets(name, owner_id, birth_date) VALUES('%s', '%s', '2022-01-25')", petName, ownerId);
+		final String petSql = String.format(
+				"INSERT INTO pets(name, owner_id, birth_date) VALUES('%s', '%s', '2022-01-25')", petName, ownerId);
 		db.sqlRequestUpdate(petSql);
 
-		final String petIdSql = String.format("SELECT * from pets where name = '%s' and owner_id = '%s'", petName, ownerId);
+		final String petIdSql = String.format("SELECT * from pets where name = '%s' and owner_id = '%s'", petName,
+				ownerId);
 		Long expectedPetId = db.sqlRequest(petIdSql).getLong("id");
 
-		String countSqlRequest = String.format("SELECT count(*) from %s where owner_id = %s and id = %s", entity, ownerId, expectedPetId);
+		String countSqlRequest = String.format("SELECT count(*) from %s where owner_id = %s and id = %s", entity,
+				ownerId, expectedPetId);
 
-		Response response = given()
-			.pathParam("ownerId", ownerId)
-			.when()
-			.get("/owners/{ownerId}/pets")
-			.then()
-			.extract().response();
+		Response response = given().pathParam("ownerId", ownerId).when().get("/owners/{ownerId}/pets").then().extract()
+				.response();
 
 		Long expectedNumberOfPets = db.sqlRequest(countSqlRequest).getLong("count");
 		Long actualPetId = response.jsonPath().getLong("id[0]");
@@ -85,14 +82,10 @@ public class PetApiTest extends BaseApiTest {
 		Long ownerId = db.insert("owners", "last_name", lastName);
 		String sqlRequest = String.format("SELECT * from %s where owner_id = %s", entity, ownerId);
 
-		Response response = given()
-			.header("content-type", "application/json")
-			.body(generateStringFromResource("/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/pet/petBody.json"))
-			.pathParam("ownerId", ownerId)
-			.when()
-			.post("/owners/{ownerId}/pets")
-			.then()
-			.extract().response();
+		Response response = given().header("content-type", "application/json")
+				.body(generateStringFromResource(
+						"/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/pet/petBody.json"))
+				.pathParam("ownerId", ownerId).when().post("/owners/{ownerId}/pets").then().extract().response();
 
 		Long petId = response.jsonPath().getLong("id");
 		Long expectedPetId = db.sqlRequest(sqlRequest).getLong("id");
@@ -103,4 +96,5 @@ public class PetApiTest extends BaseApiTest {
 		db.delete(entity, petId);
 		db.delete("owners", ownerId);
 	}
+
 }
