@@ -27,29 +27,33 @@ See `readme-task.md`
 
 See `docker-compose.yml`
 
+To run docker-compose use
 ```docker-compose up```
 
 - [x] Done
 
 ### Develop REST API autotests with quality criteria
+
 - self-describing
 - isolated
 - coverage of CRUD main flows for core domain entities/resources
 
 
-- [ ] Done
+- [x] Done
 
 ### Describe bugs found in backend business-logic with FIXME.md
 
 See `FIXME.md`
 
-- [ ] Done
+- [x] Done
 
 ### Implement correct TO-BE scenarios as `@Disabled` auto-tests with `@DisplayName` and `/** Javadoc comments */` describing bugs found
 
-- [ ] Done
+- [x] Done
 
 ### Fix bugs in backend java code
+
+Gave up after 3 hours
 
 - [ ] Done
 
