@@ -59,4 +59,6 @@ Gave up after 3 hours
 
 ### Develop GitLab build pipeline
 
+I added .gitlab-ci.yml but didn't check if it works? 
+
 - [ ] Done
