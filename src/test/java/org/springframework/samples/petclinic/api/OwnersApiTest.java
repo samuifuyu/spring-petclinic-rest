@@ -51,7 +51,7 @@ public class OwnersApiTest extends BaseApiTest {
 	@DisplayName("Create Owner with POST /owners")
 	public void shouldCreateOwnerInfoByLastName() throws SQLException, IOException {
 		Response response = given().header("content-type", "application/json").body(generateStringFromResource(
-				"/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/owner/ownerBody.json")).when()
+				"src/test/resources/body/owner/ownerBody.json")).when()
 				.post("/owners").then().extract().response();
 
 		assertEquals(201, response.statusCode());

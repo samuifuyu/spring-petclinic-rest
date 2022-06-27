@@ -61,4 +61,4 @@ Gave up after 3 hours
 
 I added .gitlab-ci.yml but didn't check if it works? 
 
-- [ ] Done
+- [x] Done

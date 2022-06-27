@@ -84,7 +84,7 @@ public class PetApiTest extends BaseApiTest {
 
 		Response response = given().header("content-type", "application/json")
 				.body(generateStringFromResource(
-						"/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/pet/petBody.json"))
+						"src/test/resources/body/pet/petBody.json"))
 				.pathParam("ownerId", ownerId).when().post("/owners/{ownerId}/pets").then().extract().response();
 
 		Long petId = response.jsonPath().getLong("id");

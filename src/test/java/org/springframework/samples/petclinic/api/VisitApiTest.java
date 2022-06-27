@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.api;
 
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -76,11 +75,9 @@ public class VisitApiTest extends BaseApiTest {
 		Long petId = db.sqlRequest(petIdSql).getLong("id");
 
 		Response response = given().header("content-type", "application/json").body(generateStringFromResource(
-				"/Users/y.v.barsukova/build/spring-petclinic-rest/src/test/resources/body/visit/visitBody.json"))
+				"src/test/resources/body/visit/visitBody.json"))
 				.pathParam("ownerId", ownerId).pathParam("petId", petId).when()
 				.post("/owners/{ownerId}/pets/{petId}/visits").then().extract().response();
-
-		JsonPath resp = response.jsonPath();
 
 		Long visitId = response.jsonPath().getLong("id");
 
