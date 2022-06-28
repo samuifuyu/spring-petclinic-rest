@@ -50,14 +50,32 @@ public class OwnersApiTest extends BaseApiTest {
 	@Test
 	@DisplayName("Create Owner with POST /owners")
 	public void shouldCreateOwnerInfoByLastName() throws SQLException, IOException {
-		Response response = given().header("content-type", "application/json").body(generateStringFromResource(
-				"src/test/resources/body/owner/ownerBody.json")).when()
-				.post("/owners").then().extract().response();
+		Response response = given().header("content-type", "application/json")
+				.body(String.format(generateStringFromResource("src/test/resources/body/owner/ownerBody.json"), "Bond"))
+				.when().post("/owners").then().extract().response();
 
 		assertEquals(201, response.statusCode());
 		assertNotNull(db.selectById(entity, response.jsonPath().getLong("id")));
 
 		db.delete(entity, response.jsonPath().getLong("id"));
+	}
+
+	@Test
+	@DisplayName("Update Owner with POST /owners/{ownerId}")
+	public void shouldUpdateOwnerInfo() throws SQLException, IOException {
+		final String lastName = "Claus";
+		final String newLastName = "Claus";
+		Long id = db.insert(entity, "last_name", lastName);
+
+		Response response = given().header("content-type", "application/json").pathParam("ownerId", id).body(
+				String.format(generateStringFromResource("src/test/resources/body/owner/ownerBody.json"), newLastName))
+				.when().post("/owners/{ownerId}").then().extract().response();
+
+		assertEquals(201, response.statusCode());
+		assertEquals(db.sqlRequest(String.format("SELECT * from owners where id = %s", id)).getString("last_name"),
+				response.jsonPath().getString("lastName"));
+
+		db.delete(entity, id);
 	}
 
 }

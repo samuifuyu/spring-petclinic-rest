@@ -18,8 +18,6 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,8 +90,11 @@ class PetController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public @ResponseBody Pet processUpdateForm(@PathVariable Integer ownerId, @PathVariable Integer petId,
 			@Valid @RequestBody Pet pet) {
-		pet.setId(petId);
-		return processCreationForm(ownerId, pet);
+		Owner owner = this.owners.findById(ownerId);
+		owner.getPet(petId).setName(pet.getName());
+		owner.getPet(petId).setBirthDate(pet.getBirthDate());
+		this.owners.save(owner);
+		return owner.getPet(petId);
 	}
 
 }

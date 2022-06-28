@@ -2,7 +2,7 @@
   "address": "string",
   "city": "string",
   "firstName": "Angelina",
-  "lastName": "Jolie",
+  "lastName": "%s",
   "pets": [],
   "telephone": "1234"
 }

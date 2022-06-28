@@ -17,6 +17,8 @@ public class PetApiTest extends BaseApiTest {
 	@Test
 	@DisplayName("Get pets by owner id with GET /owners/{ownerId}/pets")
 	public void shouldGetPetInfoByOwnerId() throws SQLException {
+
+		// given
 		final String lastName = "Sloan";
 		final String petName = "Fish";
 
@@ -30,23 +32,58 @@ public class PetApiTest extends BaseApiTest {
 				ownerId);
 		Long expectedPetId = db.sqlRequest(petIdSql).getLong("id");
 
+		// when
 		Response response = given().pathParam("ownerId", ownerId).when().get("/owners/{ownerId}/pets").then().extract()
 				.response();
 
 		Long petId = response.jsonPath().getLong("id[0]");
+		int petCount = response.jsonPath().getList("$").size();
 
+		// then
 		assertEquals(200, response.statusCode());
 		assertEquals(expectedPetId, petId);
+		assertEquals(1, petCount);
 
+		// erase test data
 		db.delete("pets", expectedPetId);
 		db.delete("owners", ownerId);
 	}
 
 	@Test
-	@DisplayName("Get pet by owner id and pet id with GET /owners/{ownerId}/pets/{petId}")
-	public void shouldGetPetInfoByOwnerIdAndPetId() throws SQLException {
+	@DisplayName("Get create pet for ownerId with POST /owners/{ownerId}/pets")
+	public void shouldGetPetInfoByOwnerIdAndPetId() throws SQLException, IOException {
+
+		// given
 		final String lastName = "Sloan";
 		final String petName = "Fish";
+
+		Long ownerId = db.insert("owners", "last_name", lastName);
+
+		// when
+		Response response = given().header("content-type", "application/json").pathParam("ownerId", ownerId)
+				.body(String.format(generateStringFromResource("src/test/resources/body/pet/petBody.json"), petName))
+				.when().post("/owners/{ownerId}/pets").then().extract().response();
+
+		final String petIdSql = String.format("SELECT * from pets where owner_id = '%s'", ownerId);
+		Long expectedPetId = db.sqlRequest(petIdSql).getLong("id");
+		Long actualPetId = response.jsonPath().getLong("id");
+
+		// then
+		assertEquals(201, response.statusCode());
+		assertEquals(expectedPetId, actualPetId);
+
+		// erase test data
+		db.delete("pets", expectedPetId);
+		db.delete("owners", ownerId);
+	}
+
+	@Test
+	@DisplayName("Update pet with POST /owners/{ownerId}/pets/{petId}")
+	public void shouldUpdatePet() throws SQLException, IOException {
+
+		final String lastName = "Potter";
+		final String petName = "Fish";
+		final String newPetName = "Cat";
 
 		Long ownerId = db.insert("owners", "last_name", lastName);
 
@@ -56,42 +93,16 @@ public class PetApiTest extends BaseApiTest {
 
 		final String petIdSql = String.format("SELECT * from pets where name = '%s' and owner_id = '%s'", petName,
 				ownerId);
-		Long expectedPetId = db.sqlRequest(petIdSql).getLong("id");
-
-		String countSqlRequest = String.format("SELECT count(*) from %s where owner_id = %s and id = %s", entity,
-				ownerId, expectedPetId);
-
-		Response response = given().pathParam("ownerId", ownerId).when().get("/owners/{ownerId}/pets").then().extract()
-				.response();
-
-		Long expectedNumberOfPets = db.sqlRequest(countSqlRequest).getLong("count");
-		Long actualPetId = response.jsonPath().getLong("id[0]");
-
-		assertEquals(200, response.statusCode());
-		assertEquals(expectedPetId, actualPetId);
-		assertEquals(expectedNumberOfPets, 1);
-
-		db.delete("pets", expectedPetId);
-		db.delete("owners", ownerId);
-	}
-
-	@Test
-	@DisplayName("Create pets by owner id with POST /owners/{ownerId}/pets")
-	public void shouldCreateOwnerInfoByLastName() throws SQLException, IOException {
-		final String lastName = "Rock";
-		Long ownerId = db.insert("owners", "last_name", lastName);
-		String sqlRequest = String.format("SELECT * from %s where owner_id = %s", entity, ownerId);
+		Long petId = db.sqlRequest(petIdSql).getLong("id");
 
 		Response response = given().header("content-type", "application/json")
-				.body(generateStringFromResource(
-						"src/test/resources/body/pet/petBody.json"))
-				.pathParam("ownerId", ownerId).when().post("/owners/{ownerId}/pets").then().extract().response();
-
-		Long petId = response.jsonPath().getLong("id");
-		Long expectedPetId = db.sqlRequest(sqlRequest).getLong("id");
+				.body(String.format(generateStringFromResource("src/test/resources/body/pet/petBody.json"), newPetName))
+				.pathParam("ownerId", ownerId).pathParam("petId", petId).when().post("/owners/{ownerId}/pets/{petId}")
+				.then().extract().response();
 
 		assertEquals(201, response.statusCode());
-		assertEquals(expectedPetId, petId);
+		assertEquals(db.sqlRequest(String.format("SELECT name from %s where id = %s", entity, petId)).getString("name"),
+				newPetName);
 
 		db.delete(entity, petId);
 		db.delete("owners", ownerId);

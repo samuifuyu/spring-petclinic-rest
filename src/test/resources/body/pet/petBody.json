@@ -1,5 +1,4 @@
 {
   "birthDate": "2022-04-25",
-  "name": "Richard",
-  "visits": []
+  "name": "%s"
 }

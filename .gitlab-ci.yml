@@ -6,9 +6,7 @@ build-app:
   stage: build
   image: tinkoff-edu-app:1.0.0
   script:
-    - cd spring-petclinic-rest
-    - ./mvnw package
-    - java -jar target/*.jar
+    - ./mvnw package -Dmaven.test.skip
 
 tests:
   stage: test

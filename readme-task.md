@@ -38,6 +38,7 @@ To run docker-compose use
 - isolated
 - coverage of CRUD main flows for core domain entities/resources
 
+![alt text](green_tests.png)
 
 - [x] Done
 
@@ -53,12 +54,12 @@ See `FIXME.md`
 
 ### Fix bugs in backend java code
 
-Gave up after 3 hours
+See `FIXME.md`
 
-- [ ] Done
+- [x] Done
 
 ### Develop GitLab build pipeline
 
-I added .gitlab-ci.yml but didn't check if it works? 
+I added `.gitlab-ci.yml` but didn't check if it works? 
 
 - [x] Done
