@@ -15,16 +15,13 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import java.util.Collection;
-import java.util.Map;
-
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Collection;
 
 /**
  * @author Juergen Hoeller
@@ -48,33 +45,23 @@ class VisitController {
 	}
 
 	/**
-	 * Called before each and every @RequestMapping annotated method. 2 goals: - Make sure
-	 * we always have fresh data - Since we do not use the session scope, make sure that
-	 * Pet object always has an id (Even though id is not part of the form fields)
+	 * Get all visits for pet with petId with owner with ownerId
+	 * @param ownerId
 	 * @param petId
-	 * @return Pet
+	 * @return
 	 */
-	@ModelAttribute("visit")
-	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
-			Map<String, Object> model) {
-		Owner owner = this.owners.findById(ownerId);
-		Pet pet = owner.getPet(petId);
-		model.put("pet", pet);
-		model.put("owner", owner);
-		Visit visit = new Visit();
-		pet.addVisit(visit);
-		return visit;
-	}
-
-	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-	// called
 	@GetMapping("/owners/{ownerId}/pets/{petId}/visits") // TODO
 	public @ResponseBody Collection<Visit> initNewVisitForm(@PathVariable int ownerId, @PathVariable int petId) {
 		return owners.findById(ownerId).getPet(petId).getVisits();
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
-	// called
+	/**
+	 * Add new visit for pet with petId with owner with ownerId
+	 * @param ownerId
+	 * @param petId
+	 * @param visit
+	 * @return
+	 */
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits") // TODO
 	@ResponseStatus(HttpStatus.CREATED)
 	public @ResponseBody Owner processNewVisitForm(@PathVariable int ownerId, @PathVariable int petId,

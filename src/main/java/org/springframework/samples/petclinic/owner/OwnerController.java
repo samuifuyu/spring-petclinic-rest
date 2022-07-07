@@ -15,13 +15,6 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +22,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Juergen Hoeller
@@ -124,11 +120,16 @@ class OwnerController {
 
 	@PostMapping("/owners/{ownerId}") // TODO
 	@ResponseStatus(HttpStatus.CREATED)
-	public @ResponseBody Owner processUpdateOwnerForm(@Valid @RequestBody Owner owner,
+	public @ResponseBody ResponseEntity<Owner> processUpdateOwnerForm(@Valid @RequestBody Owner owner,
 			@PathVariable("ownerId") int ownerId) {
-
-		owner.setId(ownerId);
-		return processCreationForm(owner);
+		if (this.owners.findById(ownerId) == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		else {
+			owner.setId(ownerId);
+			this.owners.save(owner);
+			return new ResponseEntity<>(owner, HttpStatus.CREATED);
+		}
 	}
 
 	/**
